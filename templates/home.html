@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock title %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row g-5">
+        <!-- Sidebar Filter for Specialization -->
+        <div class="col-md-3">
+            <p class="fs-5 mb-1">Filter by Specialization</p>
+            <ul class="list-group mb-4 shadow-lg">
+                {% for specialization in specializations %}
+                <li class="list-group-item">
+                    <a href="{% url 'home' %}?specialization={{ specialization.slug }}" class="text-decoration-none text-dark">{{ specialization.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Doctors List -->
+        <div class="col-md-9">
+            <p class="mb-4 fs-2 fw-bolder">Our Doctors</p>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for doctor in doctors %}
+                <div class="col">
+                    <div class="card shadow-lg h-100" style="border-radius: 10px;">
+                        <!-- Doctor Image -->
+                        <img src="{{ doctor.image.url }}" class="card-img-top" alt="Doctor Image" style="width: 100%; height: 150px; object-fit: cover; border-radius: 10px 10px 0 0;">
+                        <div class="card-body">
+                            <!-- Doctor's Name -->
+                            <h5 class="card-title">Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h5>
+                            <button class="btn disabled btn-sm">{{doctor.designation}}</button>
+                            
+                            <!-- Expertise/Specializations -->
+                            <p class="card-text"><strong>Expertise:</strong>
+                                {% for specialization in doctor.specialization.all %}
+                                    {{ specialization.name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
+
+                            <!-- View Details Button -->
+                            <a href="{% url 'doctor_details' doctor.id %}" class="btn btn-primary w-100">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Cancel{% endblock title %}
+
+{% block content %}
+<div class="container mt-4 text-center">
+    <h2>Cancel Appointment</h2>
+    <p>Are you sure you want to cancel this appointment?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirm Cancel</button>
+        <a href="{% url 'appointment_list' %}" class="btn btn-secondary">Back to Appointments</a>
+    </form>
+</div>
+{% endblock %}

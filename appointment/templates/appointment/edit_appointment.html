@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Appointment{% endblock title %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 rounded-lg">
+                <div class="card-header bg-danger text-white text-center">
+                    <h4 class="mb-0">Edit Appointment</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        <!-- Display non-field errors -->
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <!-- Time Field -->
+                        <div class="form-group mb-3">
+                            <label for="id_time">Time</label>
+                            <select class="form-control {% if form.time.errors %}is-invalid{% endif %}" 
+                                    id="id_time" name="time" required>
+                                {% for choice in form.time.field.queryset %}
+                                    <option value="{{ choice.id }}" {% if choice.id == form.time.value %}selected{% endif %}>
+                                        {{ choice }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.time.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.time.errors|striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Status Field -->
+                        <div class="form-group mb-3">
+                            <label for="id_status">Status</label>
+                            <select class="form-control {% if form.status.errors %}is-invalid{% endif %}" 
+                                    id="id_status" name="status" required>
+                                {% for value, label in form.status.field.choices %}
+                                    <option value="{{ value }}" {% if value == form.status.value %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.status.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.status.errors|striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Doctor Review Field -->
+                        <div class="form-group mb-3">
+                            <label for="id_doctor_review">Doctor Review</label>
+                            <textarea class="form-control {% if form.doctor_review.errors %}is-invalid{% endif %}" 
+                                      id="id_doctor_review" name="doctor_review" rows="4">{{ form.doctor_review.value|default_if_none:'' }}</textarea>
+                            {% if form.doctor_review.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.doctor_review.errors|striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-danger btn-block">Update Appointment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

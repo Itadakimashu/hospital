@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock title %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <!-- Doctor's Profile Section -->
+    <div class="card shadow-sm mb-5" style="border-radius: 15px;">
+        <div class="row g-0">
+            <!-- Doctor Image -->
+            <div class="col-md-4 d-flex align-items-center justify-content-center">
+                <img src="{{ doctor.image.url }}" class="img-fluid rounded-circle" alt="Doctor Image" style="width: 200px; height: 200px; object-fit: cover;">
+            </div>
+            <!-- Doctor's Information -->
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h4>
+                    <p class="card-text"><strong>Designation:</strong> 
+                        <button type="button" class="btn btn-secondary">{{ doctor.designation }}</button>
+                    </p>
+                    
+                    
+                    <!-- Specializations -->
+                    <p class="card-text"><strong>Specializations:</strong> 
+                        {% for specialization in doctor.specialization.all %}
+                        <button type="button" class="btn btn-dark">{{ specialization.name }}</button>
+                            
+                        {% endfor %}
+                    </p>
+                    
+                    <!-- Available Times -->
+                    <p class="card-text"><strong>Available Times:</strong>
+                        {% for time in doctor.available_time.all %}
+                            <i>{{time}} |</i>
+                        {% endfor %}
+                    </p>
+                    
+                    <!-- Fee -->
+                    <p class="card-text"><strong>Consultation Fee:</strong> ${{ doctor.fee }}</p>
+
+                </div>
+            </div>
+             {% if request.session.role != 'doctor' %}
+            <div class="text-center mt-4 mb-4">
+                <a href="{% url 'make_appointment' doctor.id %}" class="btn btn-primary btn-lg">Make Appointment</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row mb-5">
+        <!-- Review Form -->
+        <div class="col-md-6">
+            <h4 class="mb-3">Submit a Review</h4>
+
+            {% if user.is_authenticated %}
+            {% if has_appointment %}
+            <form method="post" action="">
+                {% csrf_token %}
+                <div class="form-group mb-3">
+                    <label for="rate">Rating</label>
+                    <select class="form-control" id="rate" name="rate" required>
+                        <option value="⭐">⭐</option>
+                        <option value="⭐⭐">⭐⭐</option>
+                        <option value="⭐⭐⭐">⭐⭐⭐</option>
+                        <option value="⭐⭐⭐⭐">⭐⭐⭐⭐</option>
+                        <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐</option>
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="review">Review</label>
+                    <textarea class="form-control" id="review" name="review" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Review</button>
+            </form>
+            {% else %}
+            <p>You need to take an appointment with the doctor to leave a review.</p>
+            {% endif %}
+
+            {% else %}
+            
+            <p>You need to be logged in to leave a review.</p>
+
+            {% endif %}
+        </div>
+        
+        <!-- Display Reviews -->
+        <div class="col-md-6">
+            <h4 class="mb-3">Reviews</h4>
+            {% if doctor.reviews.all %}
+                {% for review in doctor.reviews.all %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ review.paitent }}</h5>
+                            <p class="card-text"><strong>Rating:</strong> {{ review.rate }}</p>
+                            <p class="card-text">{{ review.review }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No reviews yet. Be the first to review this doctor!</p>
+            {% endif %}
+        </div>
+    </div>
+    
+
+</div>
+{% endblock content %}
